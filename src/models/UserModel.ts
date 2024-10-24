@@ -13,6 +13,10 @@ const UserScheme = new Schema({
     type: String,
     required: true,
   },
+  rule: {
+    type: Number,
+    default: 1,
+  },
   createAt: {
     type: Date,
     default: Date.now(),
