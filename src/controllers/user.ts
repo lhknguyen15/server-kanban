@@ -7,18 +7,21 @@ dotenv.config();
 const register = async (req: any, res: any) => {
   const body = req.body;
   const { email, name, password } = body;
-
   try {
     const user = await UserModel.findOne({ email });
+
     if (user) {
-      throw new Error("Account is has already");
+      throw new Error(`Account is has already`);
     }
+
     const salt = await bcrypt.genSalt(10);
     const hashpassword = await bcrypt.hash(password, salt);
-    console.log(hashpassword);
+
+    body.password = hashpassword;
 
     const newUser: any = new UserModel(body);
     await newUser.save();
+
     delete newUser._doc.password;
 
     res.status(200).json({
@@ -46,7 +49,13 @@ const login = async (req: any, res: any) => {
     const user: any = await UserModel.findOne({ email });
 
     if (!user) {
-      throw new Error(`Tài khoản không tồn tại`);
+      throw new Error(`Invalid account, try again`);
+    }
+
+    const isMatchPassword = await bcrypt.compare(password, user.password);
+
+    if (!isMatchPassword) {
+      throw new Error("Incorrect email or passwrord");
     }
 
     delete user._doc.password;
