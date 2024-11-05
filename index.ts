@@ -1,10 +1,11 @@
+import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
-import userRouter from "./src/routers/user";
-import storageRouter from "./src/routers/storage";
 import { verifyToken } from "./src/middlewares/verifyToken";
-import cors from "cors";
+import storageRouter from "./src/routers/storage";
+import supplierRouter from "./src/routers/supplier";
+import userRouter from "./src/routers/user";
 dotenv.config();
 
 const PORT = process.env.PORT || 3001;
@@ -15,7 +16,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/auth", userRouter);
-
+app.use("/supplier", supplierRouter);
 app.use(verifyToken);
 app.use("/storage", storageRouter);
 
